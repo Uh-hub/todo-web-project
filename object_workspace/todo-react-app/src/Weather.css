@@ -1,0 +1,80 @@
+.weather-container-horizontal {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 20px; /* "오늘의 할일"과 더 떨어뜨리기 위해 추가 */
+}
+
+.weather-horizontal {
+    display: flex;
+    align-items: center;
+}
+
+.weather-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.weather-icon {
+    width: 50px; /* 이미지 크기를 조절합니다 */
+    height: auto; /* 이미지 비율을 유지합니다 */
+    margin-right: 20px;
+}
+
+.weather-info {
+    display: flex;
+    align-items: center;
+}
+
+.weather-info p {
+    margin: 0 20px; /* 가로 간격을 넓게 조정합니다 */
+    font-family: 'Roboto', sans-serif; /* 글꼴 스타일을 부드럽게 변경 */
+    font-size: 16px;
+}
+
+.location {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.temperature {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.description {
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif; /* 글꼴 스타일을 부드럽게 변경 */
+}
+
+.temp-range, .feels-like {
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif; /* 글꼴 스타일을 부드럽게 변경 */
+}
+
+.humidity {
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif; /* 글꼴 스타일을 부드럽게 변경 */
+}
+
+.not-found {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.fadeIn {
+    animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+

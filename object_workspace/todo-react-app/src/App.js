@@ -1,6 +1,7 @@
 import React from 'react';
 import Todo from './Todo';
 import AddTodo from './AddTodo';
+import Weather from './Weather';
 import { Paper, List, Container, Grid, Button, AppBar, Toolbar, Typography, IconButton, TextField } from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -22,24 +23,21 @@ class App extends React.Component {
 
     add = (item) => {
         item.todoDate = format(this.state.selectedDate, 'yyyy-MM-dd'); // 선택된 날짜로 설정
-        call("/todo", "POST", item).then((response) => {
-            // 항목 추가 후, 현재 선택된 날짜의 항목만 다시 불러오기
-            this.fetchTodos();
-        });
+        call("/todo", "POST", item).then((response) =>
+            this.setState({ items: response.data })
+        );
     }
 
     delete = (item) => {
-        call("/todo", "DELETE", item).then((response) => {
-            // 항목 삭제 후, 현재 선택된 날짜의 항목만 다시 불러오기
-            this.fetchTodos();
-        });
+        call("/todo", "DELETE", item).then((response) =>
+            this.setState({ items: response.data })
+        );
     }
 
     update = (item) => {
-        call("/todo", "PUT", item).then((response) => {
-            // 항목 업데이트 후, 현재 선택된 날짜의 항목만 다시 불러오기
-            this.fetchTodos();
-        });
+        call("/todo", "PUT", item).then((response) =>
+            this.setState({ items: response.data })
+        );
     }
 
     componentDidMount() {
@@ -85,7 +83,7 @@ class App extends React.Component {
                 <Toolbar>
                     <Grid justifyContent="space-between" container>
                         <Grid item>
-                            <Typography variant="h6">오늘의 할일</Typography>
+                            <Typography variant="h6">오늘 하루</Typography>
                         </Grid>
                         <Grid item>
                             <Button color="inherit" onClick={signout}>logout</Button>
@@ -98,7 +96,8 @@ class App extends React.Component {
         var todoListPage = (
             <div>
                 {navigationBar}
-                <Container maxWidth="md">
+                <Container maxWidth="lg"> {/* 최대 가로 너비를 더 넓게 설정 */}
+                    <Weather />
                     <Grid container justifyContent="space-between" alignItems="center" style={{ margin: '16px 0' }}>
                         <Grid item>
                             <IconButton onClick={this.handlePrevDay}>
@@ -126,7 +125,7 @@ class App extends React.Component {
             </div>
         );
 
-        var loadingPage = <h1>로딩중..</h1>
+        var loadingPage = <h1>로딩중..</h1>;
         var content = loadingPage;
 
         if (!this.state.loading) {
@@ -141,4 +140,5 @@ class App extends React.Component {
 }
 
 export default App;
+
 
