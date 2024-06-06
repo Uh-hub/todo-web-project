@@ -1,109 +1,14 @@
-// import React from 'react';
-// import Todo from './Todo';
-// import AddTodo from './AddTodo';
-// import { Paper, List, Container, Grid, Button,AppBar, Toolbar, Typography } from "@material-ui/core";
-// import './App.css';
-// import { call ,signout } from './service/ApiService';
-// import Weather from './Weather'; // 추가된 부분: Weather 컴포넌트 임포트
-
-// class App extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             items: [],
-//             loading : true,
-//         };
-//     }
-
-//     add = (item) => {
-//         call("/todo","POST",item).then((response) =>
-//             this.setState({items:response.data})
-//         );
-//     }
-
-//     delete = (item) => {
-//         call("/todo","DELETE",item).then((response) =>
-//             this.setState({items:response.data})
-//         );
-//     }
-
-//     update = (item) => {
-//         call("/todo","PUT",item).then((response) =>
-//             this.setState({items:response.data})
-//         );
-//     }
-
-//     componentDidMount(){
-//         call("/todo","GET",null).then((response) =>
-//             this.setState({items:response.data, loading: false})
-//         );
-//     }
-
-//     render(){
-//         var todoItems = this.state.items.length > 0 && 
-//         (<Paper style={{margin:16}}>
-//             <List> 
-//                 {this.state.items.map((item,idx) => (
-//             <Todo item = {item} key = {item.id} delete = {this.delete} update = {this.update} />
-//                 ))}
-//                 </List>
-//             </Paper>
-//         );
-
-//         var navigationBar = (
-//             <AppBar position="static">
-//                 <Toolbar>
-//                     <Grid justifyContent="space-between" container>
-//                     <Grid item>
-//                         <Typography variant = "h6">오늘의 할일</Typography>
-//                     </Grid>
-//                     <Grid item>
-//                         <Button color = "inherit" onClick={signout}>logout</Button>
-//                     </Grid>
-
-//                     </Grid>
-//                 </Toolbar>
-//             </AppBar>
-//         );
-
-
-//         var todoListPage = (
-//             <div>
-//                 {navigationBar}
-//                 <Container maxWidth = "md">
-//                     <AddTodo add={this.add} />
-//                     <div className = "TodoList">{todoItems}</div>
-//                 </Container>
-//                 <Container maxWidth = "md">
-//                     <Weather/>
-//                 </Container>
-//             </div>
-//         );
-
-//         var loadingPage = <h1>로딩중..</h1>
-//         var content = loadingPage;
-        
-//         if(!this.state.loading){
-//             content = todoListPage;
-//         }
-//         return (
-//             <div className = "App">
-//                 {content}
-//             </div>
-//         );
-//     }
-// }
-
-// export default App;
-
-//날씨만 넣은 버전
 import React from 'react';
 import Todo from './Todo';
 import AddTodo from './AddTodo';
-import { Paper, List, Container, Grid, Button, AppBar, Toolbar, Typography } from "@material-ui/core";
+import { Paper, List, Container, Grid, Button, AppBar, Toolbar, Typography, IconButton, TextField } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import './App.css';
 import { call, signout } from './service/ApiService';
-import Weather from './Weather';
+import { format, addDays, subDays } from 'date-fns';
 
 class App extends React.Component {
     constructor(props) {
@@ -111,63 +16,71 @@ class App extends React.Component {
         this.state = {
             items: [],
             loading: true,
-            currentPage: 1,
-            itemsPerPage: 10,
+            selectedDate: new Date()
         };
     }
 
     add = (item) => {
-        call("/todo", "POST", item).then((response) =>
-            this.setState({ items: response.data })
-        );
+        item.todoDate = format(this.state.selectedDate, 'yyyy-MM-dd'); // 선택된 날짜로 설정
+        call("/todo", "POST", item).then((response) => {
+            // 항목 추가 후, 현재 선택된 날짜의 항목만 다시 불러오기
+            this.fetchTodos();
+        });
     }
 
     delete = (item) => {
-        call("/todo", "DELETE", item).then((response) =>
-            this.setState({ items: response.data })
-        );
+        call("/todo", "DELETE", item).then((response) => {
+            // 항목 삭제 후, 현재 선택된 날짜의 항목만 다시 불러오기
+            this.fetchTodos();
+        });
     }
 
     update = (item) => {
-        call("/todo", "PUT", item).then((response) =>
-            this.setState({ items: response.data })
-        );
+        call("/todo", "PUT", item).then((response) => {
+            // 항목 업데이트 후, 현재 선택된 날짜의 항목만 다시 불러오기
+            this.fetchTodos();
+        });
     }
 
     componentDidMount() {
-        call("/todo", "GET", null).then((response) =>
+        this.fetchTodos();
+    }
+
+    fetchTodos = () => {
+        const dateStr = format(this.state.selectedDate, 'yyyy-MM-dd');
+        call("/todo", "GET", { todoDate: dateStr }).then((response) =>
             this.setState({ items: response.data, loading: false })
         );
     }
 
-    handlePageChange = (event, value) => {
-        this.setState({ currentPage: value });
+    handleDateChange = (date) => {
+        this.setState({ selectedDate: date }, this.fetchTodos);
+    }
+
+    handlePrevDay = () => {
+        this.setState((prevState) => ({
+            selectedDate: subDays(prevState.selectedDate, 1)
+        }), this.fetchTodos);
+    }
+
+    handleNextDay = () => {
+        this.setState((prevState) => ({
+            selectedDate: addDays(prevState.selectedDate, 1)
+        }), this.fetchTodos);
     }
 
     render() {
-        const { items, currentPage, itemsPerPage } = this.state;
-
-        // Calculate the items to display on the current page
-        const indexOfLastItem = currentPage * itemsPerPage;
-        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-        const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
-
-        const todoItems = currentItems.length > 0 && (
-            <Paper style={{ margin: 16 }}>
+        var todoItems = this.state.items.length > 0 &&
+            (<Paper style={{ margin: 16 }}>
                 <List>
-                    {currentItems.map((item, idx) => (
-                        <Todo
-                            item={item}
-                            key={item.id}
-                            delete={this.delete}
-                            update={this.update}
-                        />
+                    {this.state.items.map((item, idx) => (
+                        <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
                     ))}
                 </List>
             </Paper>
-        );
+            );
 
-        const navigationBar = (
+        var navigationBar = (
             <AppBar position="static">
                 <Toolbar>
                     <Grid justifyContent="space-between" container>
@@ -182,42 +95,43 @@ class App extends React.Component {
             </AppBar>
         );
 
-        const pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(items.length / itemsPerPage); i++) {
-            pageNumbers.push(i);
-        }
-
-        const pageButtons = (
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                {pageNumbers.map(number => (
-                    <Button key={number} onClick={() => this.handlePageChange(null, number)}>
-                        {number}
-                    </Button>
-                ))}
-            </div>
-        );
-
-        const todoListPage = (
+        var todoListPage = (
             <div>
                 {navigationBar}
-                <Container maxWidth="lg">
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={6}>
-                            <Weather />
+                <Container maxWidth="md">
+                    <Grid container justifyContent="space-between" alignItems="center" style={{ margin: '16px 0' }}>
+                        <Grid item>
+                            <IconButton onClick={this.handlePrevDay}>
+                                <ArrowBackIosIcon />
+                            </IconButton>
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                            <AddTodo add={this.add} />
-                            <div className="TodoList">{todoItems}</div>
-                            {pageButtons}
+                        <Grid item>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    value={this.state.selectedDate}
+                                    onChange={this.handleDateChange}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item>
+                            <IconButton onClick={this.handleNextDay}>
+                                <ArrowForwardIosIcon />
+                            </IconButton>
                         </Grid>
                     </Grid>
+                    <AddTodo add={this.add} />
+                    <div className="TodoList">{todoItems}</div>
                 </Container>
             </div>
         );
 
-        const loadingPage = <h1>로딩중..</h1>;
-        const content = this.state.loading ? loadingPage : todoListPage;
+        var loadingPage = <h1>로딩중..</h1>
+        var content = loadingPage;
 
+        if (!this.state.loading) {
+            content = todoListPage;
+        }
         return (
             <div className="App">
                 {content}

@@ -1,6 +1,7 @@
+
 import React from "react";
-import { ListItem, ListItemText, InputBase, Checkbox, ListItemSecondaryAction, IconButton } from "@material-ui/core";
-import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
+import { ListItem, ListItemText, InputBase, Checkbox, ListItemSecondaryAction, IconButton } from "@mui/material";
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 
 class Todo extends React.Component {
     constructor(props) {
@@ -15,8 +16,8 @@ class Todo extends React.Component {
     }
 
     offReadOnlyMode = () => {
-        this.setState({readOnly:false}, () => {
-            console.log("ReadOnly?", this.state.readOnly)
+        this.setState({ readOnly: false }, () => {
+            console.log("ReadOnly?", this.state.readOnly);
         });
     }
 
@@ -35,10 +36,9 @@ class Todo extends React.Component {
 
     checkboxEventHandler = (e) => {
         const thisItem = this.state.item;
-        thisItem.done = thisItem.done ? false : true;
-        // //this.setState({ item: thisItem });
-        this.setState({readOnly:true});
-        this.update(this.state.item); 
+        thisItem.done = !thisItem.done;
+        this.setState({ readOnly: true });
+        this.update(this.state.item);
     }
 
     render() {
@@ -46,8 +46,8 @@ class Todo extends React.Component {
         return (
             <ListItem>
                 <Checkbox
-                checked={item.done}
-                onChange={this.checkboxEventHandler}
+                    checked={item.done}
+                    onChange={this.checkboxEventHandler}
                 />
                 <ListItemText>
                     <InputBase
@@ -63,9 +63,8 @@ class Todo extends React.Component {
                         onKeyPress={this.enterKeyEventHandler}
                     />
                 </ListItemText>
-
                 <ListItemSecondaryAction>
-                    <IconButton aria-label='Delete' onClick={this.deleteEventHandler}>
+                    <IconButton aria-label="Delete" onClick={this.deleteEventHandler}>
                         <DeleteOutlined />
                     </IconButton>
                 </ListItemSecondaryAction>
@@ -75,4 +74,3 @@ class Todo extends React.Component {
 }
 
 export default Todo;
-

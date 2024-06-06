@@ -57,7 +57,7 @@
 // export default AddTodo;
 
 import React from "react";
-import { TextField, Paper, Button, Grid } from "@material-ui/core";
+import { TextField, Paper, Button, Grid } from "@mui/material";
 
 class AddTodo extends React.Component {
     constructor(props) {
@@ -86,8 +86,8 @@ class AddTodo extends React.Component {
     render() {
         return (
             <Paper style={{ margin: 16, padding: 16 }}>
-                <Grid container alignItems="center">
-                    <Grid item xs={10} md={10} style={{ paddingRight: 16 }}>
+                <Grid container alignItems="center" spacing={2}>
+                    <Grid item xs={10} md={10}>
                         <TextField
                             placeholder="Add Todo here"
                             fullWidth
