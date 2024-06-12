@@ -70,24 +70,38 @@ export function signout(){
     localStorage.setItem("ACCESS_TOKEN", null);
     window.location.href="/";
 }
-////
-// export function delaccount(userDTO){
-//     return call("/auth/delaccount", "POST", userDTO)
+
+export function account(){
+    // localStorage.setItem("ACCESS_TOKEN", null);
+    //여기에 회원정보 받아와야함
+    //delaccount 버튼 떠야함
+    window.location.href="/account";
+}
+
+// export function getUserInfo() {
+//     return call("/auth/userinfo", "GET", null)
 //     .then((response) => {
-//         if(response.data && response.data.length > 0 && response.data[0].id) {
-//             window.location.href="/";
-//         }
+//         return response;
 //     })
 //     .catch((error) => {
-//         console.log("[del_acc]Oops!");
-//         console.log(error.status);
-//         console.log("[del_acc]Ooops!")
-//         if(error.status === 403){
-//             window.location.href = "/auth/delaccount";
-//         }
+//         console.log("사용자 정보를 가져오는데 실패했습니다:", error);
 //         return Promise.reject(error);
 //     });
 // }
+
+export function getUserInfo() {
+    const accessToken = localStorage.getItem("ACCESS_TOKEN");
+    const request = { token: accessToken };
+    return call("/auth/userinfo", "POST", request)
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            console.log("사용자 정보를 가져오는데 실패했습니다:", error);
+            return Promise.reject(error);
+        });
+}
+
 
 export function delaccount() {
     const userId = localStorage.getItem("USER_ID"); // 사용자 ID를 로컬 스토리지나 다른 방법으로 가져옴

@@ -3,7 +3,7 @@ import Todo from './Todo';
 import AddTodo from './AddTodo';
 import { Paper, List, Container, Grid, Button, AppBar, Toolbar, Typography } from "@material-ui/core";
 import './App.css';
-import { call, signout, delaccount } from './service/ApiService';
+import { call, signout, account } from './service/ApiService';
 
 class App extends React.Component {
   constructor(props) {
@@ -61,7 +61,7 @@ class App extends React.Component {
               <Button color="inherit" onClick={signout}>logout
               {/* 여기추가 */}
               </Button>
-              <Button color="inherit" onClick={delaccount}>delete account
+              <Button color="inherit" onClick={account}>account
               </Button>
               {/* 여기추가 */}
             </Grid>

@@ -4,6 +4,7 @@ import App from "./App";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import Del_account from "./Del_account";///추가
+import Account from "./Account";//추가
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -28,6 +29,7 @@ class AppRouter extends React.Component{
                         <Route path="/login" element={<Login />}/>
                         <Route path="/signup" element={<SignUp />}/>
                         <Route path="/" element={<App />} />
+                        <Route path="/account" element={<Account />} />
                         <Route path="/delaccount" element={<Del_account />} />
                     </Routes>
                 </div>
